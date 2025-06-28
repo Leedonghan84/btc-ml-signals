@@ -17,16 +17,20 @@ def load_data():
     st.write("📊 데이터 컬럼 목록:", df.columns.tolist())
     st.write("🔍 데이터 상위 5개:", df.head())
 
-    # ✅ 결측값 처리
+    # ✅ 'Close' 컬럼 유무 확인 및 결측값 처리
     if 'Close' not in df.columns:
         st.error("❌ 'Close' 컬럼이 데이터에 없습니다.")
         st.stop()
 
     df = df.dropna(subset=['Close'])  # Close에 NaN 있는 행 제거
 
-    # ✅ 예측용 열 생성
-    df['Future_Return'] = df['Close'].shift(-3) / df['Close'] - 1
-    df['Target'] = (df['Future_Return'] > 0).astype(int)
+    try:
+        df['Future_Return'] = df['Close'].shift(-3) / df['Close'] - 1
+        df['Target'] = (df['Future_Return'] > 0).astype(int)
+    except Exception as e:
+        st.error(f"❌ 예측 열 생성 중 오류 발생: {e}")
+        st.stop()
+
     return df
 
 df = load_data()
