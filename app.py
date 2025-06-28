@@ -22,6 +22,8 @@ def load_data():
         st.error("❌ 'Close' 컬럼이 데이터에 없습니다.")
         st.stop()
 
+    # 문자열을 숫자로 변환
+    df['Close'] = pd.to_numeric(df['Close'], errors='coerce')
     df = df.dropna(subset=['Close'])  # Close에 NaN 있는 행 제거
 
     try:
