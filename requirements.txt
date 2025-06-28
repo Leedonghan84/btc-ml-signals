@@ -1,6 +1,4 @@
-streamlit
 pandas
 numpy
-matplotlib
-seaborn
-yfinance
+streamlit
+scikit-learn  ← ✅ 요거 추가!
