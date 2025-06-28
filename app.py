@@ -17,7 +17,15 @@ def load_data():
     st.write("📊 데이터 컬럼 목록:", df.columns.tolist())
     st.write("🔍 데이터 상위 5개:", df.head())
 
-    df['Future_Return'] = df['Close'].shift(-3) / df['Close'] - 1  # 3일 후 수익률
+    # ✅ 결측값 처리
+    if 'Close' not in df.columns:
+        st.error("❌ 'Close' 컬럼이 데이터에 없습니다.")
+        st.stop()
+
+    df = df.dropna(subset=['Close'])  # Close에 NaN 있는 행 제거
+
+    # ✅ 예측용 열 생성
+    df['Future_Return'] = df['Close'].shift(-3) / df['Close'] - 1
     df['Target'] = (df['Future_Return'] > 0).astype(int)
     return df
 
