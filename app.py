@@ -22,9 +22,23 @@ def load_data():
         st.error("❌ 'Close' 컬럼이 데이터에 없습니다.")
         st.stop()
 
-    # 문자열을 숫자로 변환
+    # 문자열을 숫자로 변환 (전처리 포함)
+    df['Close'] = (
+        df['Close'].astype(str)
+        .str.replace(",", "", regex=False)
+        .str.replace("$", "", regex=False)
+        .str.strip()
+    )
     df['Close'] = pd.to_numeric(df['Close'], errors='coerce')
-    df = df.dropna(subset=['Close'])  # Close에 NaN 있는 행 제거
+
+    st.write("✅ 'Close' 타입:", df['Close'].dtype)
+    st.write("✅ 'Close' 샘플:", df['Close'].head(10))
+
+    df = df.dropna(subset=['Close'])
+
+    if df['Close'].dtype == object:
+        st.error("❌ 'Close' 컬럼이 여전히 문자열(object) 타입입니다. 변환 실패.")
+        st.stop()
 
     try:
         df['Future_Return'] = df['Close'].shift(-3) / df['Close'] - 1
